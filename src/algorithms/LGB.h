@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <vector>
+#include <cmath>
 
 template <typename T>
 class LGB {
@@ -21,29 +22,25 @@ class LGB {
     maxRuns     = 10;
     maxZeroRuns = 5;
   }
-  void vectorize(std::vector<T> _signal) {
+  void vectorize(const std::vector<T>& _signal) {
     size_t N = _signal.size();
     if (N == 0)
       return;
-    if (N % nDimension != 0) {
-      size_t pad = N - N % nDimension;
-      for (int i = 0; i < pad; i++)
-        _signal.push_back(0);
-    }
-    size_t N2  = _signal.size() / nDimension;
+    size_t N2  = ceil(((float)_signal.size()) / nDimension);
     signal     = {};
     size_t pos = 0;
     for (size_t i = 0; i < N2; i++) {
-      /* code */
       std::vector<T> temp;
       for (size_t j = 0; j < nDimension; j++) {
-        /* code */
-        temp.push_back(_signal(pos++));
+        if (pos < N)
+          temp.push_back(_signal[pos++]);
+        else
+          temp.push_back(0);
       }
       signal.push_back(temp);
     }
   }
-  void run(std::vector<std::vector<T>> _initialPoints) {
+  void run(const std::vector<std::vector<T>>& _initialPoints) {
     size_t N = signal.size();
     if (N == 0)
       return;
