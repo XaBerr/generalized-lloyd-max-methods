@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <vector>
 #include <cmath>
+#include <iostream>
 
 template <typename T>
 class LGB {
@@ -40,11 +41,13 @@ class LGB {
       signal.push_back(temp);
     }
   }
-  void run(const std::vector<std::vector<T>>& _initialPoints) {
-    size_t N = signal.size();
-    if (N == 0)
-      return;
-    size_t M = signal[0].size();
+  bool run(const std::vector<std::vector<T>>& _initialPoints) {
+    size_t N            = signal.size();
+    size_t nCodevectors = pow(2, (nDimension * rate));
+    if (N == 0 || _initialPoints.size() != nCodevectors || _initialPoints[0].size() != nDimension)
+      return false;
+
+    return true;
   }
 };
 

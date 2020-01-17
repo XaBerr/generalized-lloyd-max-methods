@@ -32,3 +32,47 @@ TEST_CASE("LGB vectorize()", "[signal]") {
   REQUIRE(quantizer.signal[1][0] == 3);
   REQUIRE(quantizer.signal[1][1] == 0.7f);
 }
+
+TEST_CASE("LGB run()", "[initialPoints]") {
+  LGB<float> quantizer;
+  std::vector<float> signal;
+  std::vector<std::vector<float>> initialPoints;
+  std::vector<float> temp;
+  quantizer.nDimension = 2;
+  SECTION("signal no elements") {
+    quantizer.vectorize(signal);
+    quantizer.rate = 2;
+    REQUIRE(quantizer.run(initialPoints) == false);
+  }
+
+  signal = {1, 2, 3, 0.7};
+  quantizer.vectorize(signal);
+  SECTION("initialPoints no elements") {
+    quantizer.rate = 2;
+    REQUIRE(quantizer.run(initialPoints) == false);
+  }
+  SECTION("initialPoints wrong nCodevectors") {
+    temp           = {1, 2};
+    initialPoints  = {temp, temp};
+    quantizer.rate = 1;
+    REQUIRE(quantizer.run(initialPoints) == false);
+  }
+  SECTION("initialPoints has wrong nDimension") {
+    temp           = {1, 2, 3, 0.7};
+    initialPoints  = {temp};
+    quantizer.rate = 1;
+    REQUIRE(quantizer.run(initialPoints) == false);
+  }
+  SECTION("signal no elements") {
+    temp           = {1, 2};
+    initialPoints  = {temp};
+    quantizer.rate = 1;
+    REQUIRE(quantizer.run(initialPoints) == false);
+  }
+  SECTION("initialPoints is ok") {
+    temp           = {1, 2};
+    initialPoints  = {temp, temp, temp, temp};
+    quantizer.rate = 1;
+    REQUIRE(quantizer.run(initialPoints) == true);
+  }
+}
