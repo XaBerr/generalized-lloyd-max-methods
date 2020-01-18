@@ -42,37 +42,75 @@ TEST_CASE("LGB run()", "[initialPoints]") {
   SECTION("signal no elements") {
     quantizer.vectorize(signal);
     quantizer.rate = 2;
-    REQUIRE(quantizer.run(initialPoints) == false);
+    CHECK_THROWS(quantizer.run(initialPoints));
   }
 
   signal = {1, 2, 3, 0.7};
   quantizer.vectorize(signal);
   SECTION("initialPoints no elements") {
     quantizer.rate = 2;
-    REQUIRE(quantizer.run(initialPoints) == false);
+    CHECK_THROWS(quantizer.run(initialPoints));
   }
   SECTION("initialPoints wrong nCodevectors") {
     temp           = {1, 2};
     initialPoints  = {temp, temp};
     quantizer.rate = 1;
-    REQUIRE(quantizer.run(initialPoints) == false);
+    CHECK_THROWS(quantizer.run(initialPoints));
   }
   SECTION("initialPoints has wrong nDimension") {
     temp           = {1, 2, 3, 0.7};
     initialPoints  = {temp};
     quantizer.rate = 1;
-    REQUIRE(quantizer.run(initialPoints) == false);
+    CHECK_THROWS(quantizer.run(initialPoints));
   }
   SECTION("signal no elements") {
     temp           = {1, 2};
     initialPoints  = {temp};
     quantizer.rate = 1;
-    REQUIRE(quantizer.run(initialPoints) == false);
+    CHECK_THROWS(quantizer.run(initialPoints));
   }
   SECTION("initialPoints is ok") {
     temp           = {1, 2};
     initialPoints  = {temp, temp, temp, temp};
     quantizer.rate = 1;
     REQUIRE(quantizer.run(initialPoints) == true);
+  }
+}
+
+TEST_CASE("LGB distortion()", "[x,y]") {
+  LGB<int> quantizer;
+  // v = x - y = {0, -1}
+  // v * v = 1
+  REQUIRE(quantizer.distortion(std::vector<int>{0, 1}, std::vector<int>{0, 2}) == 1);
+  // v = x - y = {0, -2}
+  // v * v = 4
+  REQUIRE(quantizer.distortion(std::vector<int>{0, 1}, std::vector<int>{0, 3}) == 4);
+  // v = x - y = {0, 0}
+  // v * v = 0
+  REQUIRE(quantizer.distortion(std::vector<int>{0, 1}, std::vector<int>{0, 1}) == 0);
+}
+
+TEST_CASE("LGB centroid()", "[cluster]") {
+  LGB<float> quantizer;
+  std::vector<std::vector<float>> cluster;
+  std::vector<float> result;
+  std::vector<float> compare;
+  SECTION("one element") {
+    cluster = {{0, 1}};
+    result  = quantizer.centroid(cluster);
+    compare = {0, 1};
+    REQUIRE(std::equal(result.begin(), result.end(), compare.begin()));
+  }
+  SECTION("two element equals") {
+    cluster = {{0, 1}, {0, 1}};
+    result  = quantizer.centroid(cluster);
+    compare = {0, 1};
+    REQUIRE(std::equal(result.begin(), result.end(), compare.begin()));
+  }
+  SECTION("two element differents") {
+    cluster = {{0, 1}, {0, 3}};
+    result  = quantizer.centroid(cluster);
+    compare = {0, 2};
+    REQUIRE(std::equal(result.begin(), result.end(), compare.begin()));
   }
 }
