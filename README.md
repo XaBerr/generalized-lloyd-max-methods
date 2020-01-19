@@ -114,3 +114,11 @@ In addition for the LGB-split we have this parameter.
 // the size of the jump during the split
 perturbation = 0.01;
 ```
+
+## Exiting status for the run method
+
+- **-2**: Generated a cluster with zero elements
+- **-1**: Biggest cluster has zero size
+- **+0**: Finish without reaching distortion or threshold limit
+- **+1**: Stopped because distortion start increasing
+- **+2**: Stopped because threshold reached
