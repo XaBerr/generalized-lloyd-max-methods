@@ -3,22 +3,16 @@
 
 #include "LGB.h"
 
-template <typename T>
-class LGBsplit {
-  size_t rate;
-  size_t nDimension;
-  std::vector<T> data;
+namespace LGBm {
 
+template <typename T>
+class LGBsplit : public LGB<T> {
  public:
-  LGBsplit(size_t _rate, size_t _nDimension) : rate{_rate}, nDimension{_nDimension} {};
-  void setData(const std::vector<T>& _data) {
-    data = _data;
-  }
-  T getData() const {
-    return data;
-  }
-  void run() {
+  LGBsplit() : LGB<T>{} {};
+  int run() {
+    return 0;
   }
 };
 
+};  // namespace LGBm
 #endif

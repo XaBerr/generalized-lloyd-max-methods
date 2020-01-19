@@ -20,7 +20,7 @@ TEST_CASE("LGBrandom run()", "[]") {
     quantizer.vectorize(signal);
     CHECK_THROWS(quantizer.run());
   }
-  SECTION("initialPoints no elements") {
+  SECTION("clustering exit with positive status") {
     signal = {
         1, 0, 2, 0, 3, 0, 4, 0,
         1, 1, 2, 1, 3, 1, 4, 1,
