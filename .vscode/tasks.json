@@ -1,0 +1,33 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "type": "shell",
+      "dependsOn": [
+        "test-build"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "test-build",
+      "type": "shell",
+      "command": "clear; rm test.out; g++ -std=c++14 test/algorithms/*.cpp testmain.o -o test.out; ./test.out"
+    },
+    {
+      "label": "test-build",
+      "type": "shell",
+      "command": "clear; rm test.out; g++ -std=c++14 test/algorithms/*.cpp testmain.o -o test.out; ./test.out"
+    },
+    {
+      "label": "test-debug",
+      "type": "shell",
+      "command": "g++ -std=c++14 -g src/models/*.cpp src/algorithms/*.cpp test/models/*.cpp test/algorithms/*.cpp test/lib/*.cpp testmain.o -o test.out"
+    }
+  ]
+}

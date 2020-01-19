@@ -52,20 +52,8 @@ TEST_CASE("LGB run()", "[initialPoints]") {
     quantizer.rate = 2;
     CHECK_THROWS(quantizer.run(initialPoints));
   }
-  SECTION("initialPoints wrong nCodevectors") {
-    temp           = {1, 2};
-    initialPoints  = {temp, temp};
-    quantizer.rate = 1;
-    CHECK_THROWS(quantizer.run(initialPoints));
-  }
-  SECTION("initialPoints has wrong nDimension") {
+  SECTION("initialPoints has size > 0") {
     temp           = {1, 2, 3, 0.7};
-    initialPoints  = {temp};
-    quantizer.rate = 1;
-    CHECK_THROWS(quantizer.run(initialPoints));
-  }
-  SECTION("signal no elements") {
-    temp           = {1, 2};
     initialPoints  = {temp};
     quantizer.rate = 1;
     CHECK_THROWS(quantizer.run(initialPoints));
@@ -82,6 +70,10 @@ TEST_CASE("LGB run()", "[initialPoints]") {
     quantizer.rate = 1;
     quantizer.vectorize(signal);
     REQUIRE(quantizer.run(initialPoints) > 0);
+    REQUIRE(quantizer.codebook.size() == 4);
+    for (size_t i = 0; i < 4; i++) {
+      REQUIRE(quantizer.codebook[i].size() == 2);
+    }
   }
 }
 

@@ -57,11 +57,10 @@ class LGB {
   }
   int run(const vPoints<T>& _initialPoints) {
     size_t N            = signal.size();
-    size_t nCodevectors = pow(2, (nDimension * rate));
+    size_t nCodevectors = _initialPoints.size();
     bool noZeroClusters;
     T distances[N][nCodevectors];
     std::vector<vPoints<T>> clustersVal(nCodevectors);
-    std::vector<std::vector<size_t>> clustersInd(nCodevectors);
     vPoints<T> centroids(nCodevectors);
     vPoints<T> centroidsOld(nCodevectors);
     size_t biggest = 0;
@@ -73,8 +72,8 @@ class LGB {
     // checks
     if (N == 0)
       throw "The signal size must be > 0!";
-    if (_initialPoints.size() != nCodevectors)
-      throw "The number of initial point<T> must be the same of 2 ^ (nDimension * rate)!";
+    if (_initialPoints.size() == 0)
+      throw "The number of initial point<T> must > 0!";
     if (_initialPoints[0].size() != nDimension)
       throw "The initial point<T> dimension must be the same of nDimension!";
 
@@ -91,7 +90,6 @@ class LGB {
         // find clusters
         for (size_t j = 0; j < nCodevectors; j++) {
           clustersVal[j] = {};
-          clustersInd[j] = {};
         }
         for (size_t i = 0; i < N; i++) {
           min = 0;
@@ -99,7 +97,6 @@ class LGB {
             if (distances[i][j] < distances[i][min])
               min = j;
           clustersVal[min].push_back(signal[i]);
-          // clustersInd[min].push_back(i);
         }
 
         // find biggest cluster
@@ -180,6 +177,17 @@ class LGB {
       temp[j] /= nDimension;
     }
     return temp;
+  }
+  void printPoint(const Point<T>& _point) {
+    for (size_t i = 0; i < _point.size(); i++) {
+      std::cout << " " << _point[i];
+    }
+    std::cout << std::endl;
+  }
+  void printVectorPoints(const vPoints<T>& _points) {
+    for (size_t i = 0; i < _points.size(); i++) {
+      printPoint(_points[i]);
+    }
   }
 };
 
