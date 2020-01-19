@@ -74,7 +74,7 @@ class LGB {
     if (N == 0)
       throw "The signal size must be > 0!";
     if (_initialPoints.size() != nCodevectors)
-      throw "The number of initial point<T> must be the same of 2 * (nDimension * rate)!";
+      throw "The number of initial point<T> must be the same of 2 ^ (nDimension * rate)!";
     if (_initialPoints[0].size() != nDimension)
       throw "The initial point<T> dimension must be the same of nDimension!";
 
