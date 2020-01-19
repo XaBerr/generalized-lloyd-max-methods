@@ -1,5 +1,6 @@
 #include "../../src/include.h"
 #include "../catch.hpp"
+using namespace LGBm;
 
 TEST_CASE("LGB LGB()", "[]") {
   LGB<int> quantizer;
@@ -12,7 +13,7 @@ TEST_CASE("LGB LGB()", "[]") {
 
 TEST_CASE("LGB vectorize()", "[signal]") {
   LGB<float> quantizer;
-  std::vector<float> signal{0, 0.5, 0.25};
+  Point<float> signal{0, 0.5, 0.25};
   quantizer.nDimension = 2;
   quantizer.vectorize(signal);
   REQUIRE(quantizer.signal.size() == 2);
@@ -35,9 +36,9 @@ TEST_CASE("LGB vectorize()", "[signal]") {
 
 TEST_CASE("LGB run()", "[initialPoints]") {
   LGB<float> quantizer;
-  std::vector<float> signal;
-  std::vector<std::vector<float>> initialPoints;
-  std::vector<float> temp;
+  Point<float> signal;
+  vPoints<float> initialPoints;
+  Point<float> temp;
   quantizer.nDimension = 2;
   SECTION("signal no elements") {
     quantizer.vectorize(signal);
@@ -69,11 +70,18 @@ TEST_CASE("LGB run()", "[initialPoints]") {
     quantizer.rate = 1;
     CHECK_THROWS(quantizer.run(initialPoints));
   }
-  SECTION("initialPoints is ok") {
+  SECTION("zero cluster") {
     temp           = {1, 2};
     initialPoints  = {temp, temp, temp, temp};
     quantizer.rate = 1;
-    REQUIRE(quantizer.run(initialPoints) == true);
+    REQUIRE(quantizer.run(initialPoints) == -2);
+  }
+  SECTION("clustering exit with positive status") {
+    signal         = {1, 0, 2, 0, 3, 0, 4, 0};
+    initialPoints  = {{1, 0}, {2, 0}, {3, 0}, {4, 0}};
+    quantizer.rate = 1;
+    quantizer.vectorize(signal);
+    REQUIRE(quantizer.run(initialPoints) > 0);
   }
 }
 
@@ -92,9 +100,9 @@ TEST_CASE("LGB distortion()", "[x,y]") {
 
 TEST_CASE("LGB centroid()", "[cluster]") {
   LGB<float> quantizer;
-  std::vector<std::vector<float>> cluster;
-  std::vector<float> result;
-  std::vector<float> compare;
+  vPoints<float> cluster;
+  Point<float> result;
+  Point<float> compare;
   SECTION("one element") {
     cluster = {{0, 1}};
     result  = quantizer.centroid(cluster);
@@ -113,4 +121,25 @@ TEST_CASE("LGB centroid()", "[cluster]") {
     compare = {0, 2};
     REQUIRE(std::equal(result.begin(), result.end(), compare.begin()));
   }
+}
+
+TEST_CASE("LGB avgDistortion()", "[clusters,centroids]") {
+  LGB<float> quantizer;
+  std::vector<vPoints<float>> clusters = {{}, {}, {}};
+  vPoints<float> centroids             = {{}, {}, {}};
+
+  clusters[0]  = {{0, 1}, {0, 1}};
+  clusters[1]  = {{0, 2}, {0, 2}};
+  clusters[2]  = {{0, 3}, {0, 3}};
+  centroids[0] = {0, 1};
+  centroids[1] = {0, 2};
+  centroids[2] = {0, 3};
+  REQUIRE(quantizer.avgDistortion(clusters, centroids) == 0);
+  // v = {0, 2}
+  // v * v = 4
+  // w = 4 + 4 + 4 + 4 = 16
+  // 16 / 2 / 8
+  clusters[2]  = {{0, 3}, {0, 3}, {0, 3}, {0, 3}};
+  centroids[2] = {0, 1};
+  REQUIRE(quantizer.avgDistortion(clusters, centroids) == 1);
 }

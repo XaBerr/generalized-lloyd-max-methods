@@ -3,22 +3,15 @@
 
 #include "LGB.h"
 
-template <typename T>
-class LGBrandom {
-  size_t rate;
-  size_t nDimension;
-  std::vector<T> data;
+namespace LGBm {
 
- public:
-  LGBrandom(size_t _rate, size_t _nDimension) : rate{_rate}, nDimension{_nDimension} {};
-  void setData(const std::vector<T>& _data) {
-    data = _data;
-  }
-  T getData() const {
-    return data;
-  }
-  void run() {
-  }
-};
+// template <typename T>
+// class LGBrandom : public LGB {
+//  public:
+//   LGBrandom() : LGB{} {};
+//   int run(const vPoints<T>& _initialPoints) {
+//   }
+// };
 
+};  // namespace LGBm
 #endif

@@ -9,6 +9,14 @@
 #include <functional>
 #include <typeinfo>
 
+namespace LGBm {
+
+template <typename T>
+using Point = std::vector<T>;
+
+template <typename T>
+using vPoints = std::vector<Point<T>>;
+
 template <typename T>
 class LGB {
  public:
@@ -17,7 +25,10 @@ class LGB {
   double threshold;
   size_t maxRuns;
   size_t maxZeroRuns;
-  std::vector<std::vector<T>> signal;
+  size_t dist;
+  size_t error;
+  vPoints<T> signal;
+  vPoints<T> codebook;
 
   LGB() {
     rate        = 2;
@@ -26,7 +37,7 @@ class LGB {
     maxRuns     = 10;
     maxZeroRuns = 5;
   }
-  void vectorize(const std::vector<T>& _signal) {
+  void vectorize(const Point<T>& _signal) {
     size_t N = _signal.size();
     if (N == 0)
       return;
@@ -34,7 +45,7 @@ class LGB {
     signal     = {};
     size_t pos = 0;
     for (size_t i = 0; i < N2; i++) {
-      std::vector<T> temp;
+      Point<T> temp;
       for (size_t j = 0; j < nDimension; j++) {
         if (pos < N)
           temp.push_back(_signal[pos++]);
@@ -44,26 +55,28 @@ class LGB {
       signal.push_back(temp);
     }
   }
-  bool run(const std::vector<std::vector<T>>& _initialPoints) {
+  int run(const vPoints<T>& _initialPoints) {
     size_t N            = signal.size();
     size_t nCodevectors = pow(2, (nDimension * rate));
     bool noZeroClusters;
     T distances[N][nCodevectors];
-    std::vector<std::vector<T>> clustersVal[nCodevectors];
-    std::vector<size_t> clustersInd[nCodevectors];
-    size_t min;
+    std::vector<vPoints<T>> clustersVal(nCodevectors);
+    std::vector<std::vector<size_t>> clustersInd(nCodevectors);
+    vPoints<T> centroids(nCodevectors);
+    vPoints<T> centroidsOld(nCodevectors);
     size_t biggest = 0;
-    std::vector<T> centroids[nCodevectors];
+    size_t min;
+    size_t D = SIZE_MAX;  // distortion
+    size_t Dold;
+    size_t E;  // error
 
     // checks
     if (N == 0)
       throw "The signal size must be > 0!";
     if (_initialPoints.size() != nCodevectors)
-      throw "The number of initial points must be the same of 2 * (nDimension * rate)!";
+      throw "The number of initial point<T> must be the same of 2 * (nDimension * rate)!";
     if (_initialPoints[0].size() != nDimension)
-      throw "The initial points dimension must be the same of nDimension!";
-    // if (N == 0 || _initialPoints.size() != nCodevectors || _initialPoints[0].size() != nDimension)
-    //   return false;
+      throw "The initial point<T> dimension must be the same of nDimension!";
 
     // main algorithm
     for (size_t run = 0; run < maxRuns; run++) {
@@ -95,7 +108,7 @@ class LGB {
           if (clustersVal[j].size() > clustersVal[biggest].size())
             biggest = j;
         if (clustersVal[biggest].size() == 0)
-          return false;
+          return -1;
 
         // calculate centroid
         noZeroClusters = true;
@@ -109,22 +122,57 @@ class LGB {
         }
 
         // break condition
+        if (noZeroClusters)
+          break;
       }
       // calculate the distortion
+      Dold = D;
+      D    = avgDistortion(clustersVal, centroids);
+      if (D == 0)
+        E = 0;
+      else
+        E = (D - Dold) / D;
+
       // break conditions
+      if (!noZeroClusters)
+        return -2;
+      if (D >= Dold) {
+        codebook = centroidsOld;
+        dist     = D;
+        error    = E;
+        return 1;
+      }
+      if (threshold >= E) {
+        codebook = centroids;
+        dist     = D;
+        error    = E;
+        return 2;
+      }
+      centroidsOld = centroids;
     }
-    return true;
+    return 0;
   }
-  T distortion(const std::vector<T>& _x, const std::vector<T>& _y) const {
+  T distortion(const Point<T>& _x, const Point<T>& _y) const {
     T temp = 0;
     for (size_t i = 0; i < _x.size(); i++) {
       temp += (_x[i] - _y[i]) * (_x[i] - _y[i]);
     }
     return temp;
   }
-  std::vector<T> centroid(const std::vector<std::vector<T>>& _cluster) const {
-    size_t N            = _cluster.size();
-    std::vector<T> temp = {0};
+  T avgDistortion(const std::vector<vPoints<T>>& _clusters, const vPoints<T>& _centroids) {
+    T dist      = 0;
+    T nElements = 0;
+    for (size_t i = 0; i < _clusters.size(); i++) {
+      nElements += _clusters[i].size();
+      for (size_t j = 0; j < _clusters[i].size(); j++) {
+        dist += distortion(_clusters[i][j], _centroids[i]);
+      }
+    }
+    return dist / (nDimension * nElements);
+  }
+  Point<T> centroid(const vPoints<T>& _cluster) const {
+    size_t N      = _cluster.size();
+    Point<T> temp = {0};
     for (size_t j = 0; j < nDimension; j++) {
       for (size_t i = 0; i < N; i++) {
         temp[j] += _cluster[i][j];
@@ -135,4 +183,5 @@ class LGB {
   }
 };
 
+};  // namespace LGBm
 #endif
