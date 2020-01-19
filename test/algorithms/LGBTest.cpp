@@ -95,6 +95,10 @@ TEST_CASE("LGB centroid()", "[cluster]") {
   vPoints<float> cluster;
   Point<float> result;
   Point<float> compare;
+  SECTION("no elements") {
+    cluster = {};
+    CHECK_THROWS(quantizer.centroid(cluster));
+  }
   SECTION("one element") {
     cluster = {{0, 1}};
     result  = quantizer.centroid(cluster);

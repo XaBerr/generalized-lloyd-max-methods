@@ -25,8 +25,8 @@ class LGB {
   double threshold;
   size_t maxRuns;
   size_t maxZeroRuns;
-  size_t dist;
-  size_t error;
+  double dist;
+  double error;
   vPoints<T> signal;
   vPoints<T> codebook;
 
@@ -65,9 +65,9 @@ class LGB {
     vPoints<T> centroidsOld(nCodevectors);
     size_t biggest = 0;
     size_t min;
-    size_t D = SIZE_MAX;  // distortion
-    size_t Dold;
-    size_t E;  // error
+    double D = SIZE_MAX;  // distortion
+    double Dold;
+    double E;  // error
 
     // checks
     if (N == 0)
@@ -168,13 +168,18 @@ class LGB {
     return dist / (nDimension * nElements);
   }
   Point<T> centroid(const vPoints<T>& _cluster) const {
-    size_t N      = _cluster.size();
-    Point<T> temp = {0};
-    for (size_t j = 0; j < nDimension; j++) {
+    size_t N = _cluster.size();
+    if (N == 0)
+      throw "The cluster size must be > 0!";
+    size_t M = _cluster[0].size();
+    Point<T> temp(M);
+
+    for (size_t j = 0; j < M; j++) {
+      temp[j] = 0;
       for (size_t i = 0; i < N; i++) {
         temp[j] += _cluster[i][j];
       }
-      temp[j] /= nDimension;
+      temp[j] /= N;
     }
     return temp;
   }

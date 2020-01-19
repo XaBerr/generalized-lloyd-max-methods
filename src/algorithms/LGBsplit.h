@@ -27,8 +27,6 @@ class LGBsplit : public LGB<T> {
     // init first centroid
     centroids.push_back(this->signal[(size_t)rand() % N]);
     for (size_t i = 0; i < M; i++) {
-      // std::cout << "step: " << i << std::endl;
-      // this->printVectorPoints(this->codebook);
       // LGB
       status = LGB<T>::run(centroids);
       // zero cluster check
