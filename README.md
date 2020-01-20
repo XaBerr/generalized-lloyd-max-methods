@@ -122,3 +122,6 @@ perturbation = 0.01;
 - **+0**: Finish without reaching distortion or threshold limit
 - **+1**: Stopped because distortion start increasing
 - **+2**: Stopped because threshold reached
+
+## Example
+Also check out the example in `src/example.cpp`.
