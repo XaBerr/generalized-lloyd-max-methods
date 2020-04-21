@@ -17,6 +17,7 @@ CMake 3.14
 
 ## Installation
 - **Manual**
+
   Download this repository:
   ```sh
   git clone git@github.com:XaBerr/LGB-methods.git
@@ -27,6 +28,7 @@ CMake 3.14
   ```
 
 - **CMake module**
+
   Module data:
   ```java
   FetchContent_Declare(
