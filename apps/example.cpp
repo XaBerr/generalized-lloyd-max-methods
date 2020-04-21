@@ -1,5 +1,5 @@
 #include <iostream>
-#include "include.h"
+#include <LGB-methods.h>
 using namespace std;
 using namespace LGBm;
 

@@ -7,14 +7,53 @@ In this repository there are various implementations of the Linde, Buzo, and Gra
 
 # Documentation
 
-## LGB usage
+## Requirements
+<div style="background-color: #007bff; color:white; font-weight:bold; font-size:12px; display: inline-block; padding: 1px 4px; border-radius: 3px;">
+c++11
+</div>
+<div style="background-color: #007bff; color:white; font-weight:bold; font-size:12px; display: inline-block; padding: 1px 4px; border-radius: 3px;">
+CMake 3.14
+</div>
 
-To make this library work you must include this file.
+## Installation
+- **Manual**
+  Download this repository:
+  ```sh
+  git clone git@github.com:XaBerr/LGB-methods.git
+  ```
+  and compile it running:
+  ```sh
+  rm build/ -rf;cmake -S . -B build;make -C build;
+  ```
+
+- **CMake module**
+  Module data:
+  ```java
+  FetchContent_Declare(
+    "LGB-methods"
+    GIT_REPOSITORY https://github.com/XaBerr/LGB-methods.git
+    GIT_TAG        1.0.0
+  )
+  ```
+
+## Inclusion
+All include file are avaiable in the `include` directory.
+You can include each library individually:
 ```cpp
-#include "LGB-methods/src/include.h"
+#include <LGB-methods/LGB.h>
+#include <LGB-methods/LGBrandom.h>
+#include <LGB-methods/LGBsplit.h>
+using namespace LGBm;
+```
+or using the single include:
+```cpp
+#include <LGB-methods.h>
 using namespace LGBm;
 ```
 
+## Usage
+
+#### LGB
 First you need to initialize the quantizer.
 ```cpp
 LGB<float> quantizer;
@@ -35,7 +74,7 @@ quantizer.run(initialPoints);
 quantizer.printVectorPoints(quantizer.codebook);
 ```
 
-## LGB-random usage
+#### LGB-random
 
 To make this library work you must include this file.
 ```cpp
@@ -63,7 +102,7 @@ quantizer.run();
 quantizer.printVectorPoints(quantizer.codebook);
 ```
 
-## LGB-split usage
+#### LGB-split
 
 To make this library work you must include this file.
 ```cpp
@@ -124,4 +163,4 @@ perturbation = 0.01;
 - **+2**: Stopped because threshold reached
 
 ## Example
-Also check out the example in `src/example.cpp`.
+Also check out the example in `apps/example.cpp`.
