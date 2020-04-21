@@ -5,8 +5,6 @@ In this repository there are various implementations of the Linde, Buzo, and Gra
 - [x] LGB-random
 - [x] LGB-split
 
-# Documentation
-
 ## Requirements
 <div style="background-color: #007bff; color:white; font-weight:bold; font-size:12px; display: inline-block; padding: 1px 4px; border-radius: 3px;">
 c++11
