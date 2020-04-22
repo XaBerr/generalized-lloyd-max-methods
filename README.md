@@ -1,17 +1,20 @@
-# LGB-methods
-In this repository there are various implementations of the Linde, Buzo, and Gray algorithm (generalize Lloyd-Max algorithm) for the calculation of vector quantizer. In particular these are the algorithms implemented until now:
-
-- [x] LGB
-- [x] LGB-random
-- [x] LGB-split
-
-## Requirements
-<div style="background-color: #007bff; color:white; font-weight:bold; font-size:12px; display: inline-block; padding: 1px 4px; border-radius: 3px;">
-c++11
-</div>
-<div style="background-color: #007bff; color:white; font-weight:bold; font-size:12px; display: inline-block; padding: 1px 4px; border-radius: 3px;">
-CMake 3.14
-</div>
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/16030020/79968249-22124080-8490-11ea-9820-f578f373db96.png" alt="logo" width=150 height=150>
+  <h3 align="center">LGB-methods</h3>
+  <p align="center">
+    In this repository there are various implementations of the Linde, Buzo, and Gray algorithm (generalize Lloyd-Max algorithm) for the calculation of vector quantizer.
+    <br>
+    <strong>- Requirements -</strong>
+    <br>
+    <br>
+    <img src="https://img.shields.io/static/v1?label=cpp&message=11&color=007bff">
+    <img src="https://img.shields.io/static/v1?label=cmake&message=3.14&color=007bff">
+    <img src="https://img.shields.io/static/v1?label=SO&message=Win&color=28a745">
+    <img src="https://img.shields.io/static/v1?label=SO&message=Mac&color=28a745">
+    <img src="https://img.shields.io/static/v1?label=SO&message=Linux&color=28a745">
+  </p>
+</p>
+<br>
 
 ## Installation
 - **Manual**
@@ -53,7 +56,14 @@ using namespace LGBm;
 
 ## Usage
 
+These are the algorithms implemented until now:
+
+- [x] LGB
+- [x] LGB-random
+- [x] LGB-split
+
 #### LGB
+
 First you need to initialize the quantizer.
 ```cpp
 LGB<float> quantizer;
@@ -76,12 +86,6 @@ quantizer.printVectorPoints(quantizer.codebook);
 
 #### LGB-random
 
-To make this library work you must include this file.
-```cpp
-#include "LGB-methods/src/include.h"
-using namespace LGBm;
-```
-
 First you must initialize the quantizer.
 ```cpp
 LGBrandom<float> quantizer;
@@ -103,12 +107,6 @@ quantizer.printVectorPoints(quantizer.codebook);
 ```
 
 #### LGB-split
-
-To make this library work you must include this file.
-```cpp
-#include "LGB-methods/src/include.h"
-using namespace LGBm;
-```
 
 First you must initialize the quantizer.
 ```cpp
